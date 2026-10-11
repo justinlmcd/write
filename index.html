@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="WRITE">
+<meta name="theme-color" content="#0f0d08">
+<title>WRITE · Your journal</title>
+<style>
+:root{color-scheme:dark;--bg:#0f0d08;--ink:#f8f4ea;--muted:#bdb49f;--line:#2f2a1d;--mint:#ffd98a;--accent:#ffd98a;--error:#ff9f9f;--good:#9be39f;--sans:Inter,"Helvetica Neue",Arial,sans-serif;--mono:ui-monospace,SFMono-Regular,Consolas,monospace;
+--c1:#3987e5;--c2:#d95926;--c3:#199e70;--c4:#c98500;--c5:#d55181;--c6:#008300;--c7:#9085e9;--c8:#e66767}
+html{-webkit-text-size-adjust:100%}*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans);font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit}button,a,input,select,summary{outline-offset:5px}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--mint)}
+button{cursor:pointer;color:inherit;transition:color .15s,border-color .15s,background .15s}button:disabled{cursor:default;opacity:.5}a{color:var(--mint)}
+input,select{border-radius:6px;background:#161309;color:var(--ink);border:1px solid var(--line);padding:12px;width:100%;min-width:0}
+input::placeholder{color:#9f977f}input:focus,select:focus{border-color:var(--mint)}
+.quiet-button{border:1px solid #3f3826;border-radius:6px;padding:8px 14px;background:transparent;font-size:13px;font-weight:550}.quiet-button:hover{border-color:var(--mint);color:var(--mint)}
+.text-button{border:0;background:transparent;padding:7px 0;color:var(--muted);font-size:13px}.text-button:hover{color:var(--mint)}
+.status{font-size:12px;color:var(--muted)}.status.connected:before{content:"";display:inline-block;width:5px;height:5px;background:var(--mint);border-radius:50%;margin-right:8px}
+.workspace{min-height:100dvh;padding-left:224px;position:relative;isolation:isolate}
+.workspace:before{content:"";position:absolute;inset:0 0 0 224px;z-index:-1;background:radial-gradient(ellipse 70% 52% at 56% 16%,#d6a84a14,transparent 72%);pointer-events:none}
+.sidebar{position:fixed;inset:0 auto 0 0;width:224px;padding:calc(26px + env(safe-area-inset-top)) 24px 26px max(24px,env(safe-area-inset-left));background:linear-gradient(165deg,#241e1070,transparent 55%);border-right:1px solid #37311f;z-index:2}
+.brand{font-size:35px;font-weight:800;letter-spacing:-.08em}.brand span{color:var(--mint)}
+.nav-label{margin:57px 0 18px;font:11px var(--mono);letter-spacing:.15em;color:var(--muted)}
+.area-link{display:grid;gap:6px;text-decoration:none;padding:14px 12px;margin:0 -12px 6px;border-radius:6px;color:var(--ink)}
+.area-link[aria-current]{background:linear-gradient(110deg,#ffd98a13,transparent)}
+.area-name{font-size:14px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:9px}.area-name svg{width:15px;height:20px;color:var(--mint);flex:none}
+.area-link strong{font-size:28px;font-weight:550;letter-spacing:-.06em;line-height:1.05;overflow-wrap:anywhere}
+.index-meta{display:flex;justify-content:space-between;gap:8px;font-size:11px;color:var(--muted);padding:12px 0 0}.index-meta span:last-child{color:var(--ink)}
+.wrap{max-width:1360px;margin:auto;padding:0 max(44px,env(safe-area-inset-right)) calc(28px + env(safe-area-inset-bottom)) max(44px,env(safe-area-inset-left))}
+header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:25px 0}.overview-label{font-size:13px;color:var(--muted)}.header-right{display:flex;align-items:center;gap:18px}
+.quote{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;padding:18px 20px;margin:4px 0 6px;border:1px solid var(--line);border-radius:10px;background:linear-gradient(110deg,#ffd98a10,transparent 70%)}
+.quote-mark{font-size:34px;line-height:.8;color:var(--mint);font-weight:500;font-family:Georgia,"Times New Roman",serif;margin-top:4px}.quote-body{min-width:0}
+.quote-label{font:11px var(--mono);letter-spacing:.17em;color:var(--mint);text-transform:uppercase;margin:0 0 6px}
+.quote-text{font-size:clamp(15px,1.5vw,18px);line-height:1.5;letter-spacing:-.01em;margin:0;overflow-wrap:anywhere}.quote-author{font-size:12px;color:var(--muted);margin:6px 0 0}
+.hero{padding:31px 0 0}.hero-top{display:flex;align-items:flex-end;justify-content:space-between;gap:28px;margin-bottom:24px}
+h1{font-size:clamp(64px,7.5vw,100px);font-weight:500;line-height:1;letter-spacing:-.07em;margin:10px 0 0}
+.latest-block{text-align:right;min-width:0}.point-metric{font-size:14px;color:var(--muted);margin:0 0 5px}
+.latest{display:flex;align-items:baseline;justify-content:flex-end;gap:9px}.latest strong{font-size:clamp(46px,6vw,78px);font-weight:500;line-height:1.07;letter-spacing:-.06em}
+.latest-time{font-size:12px;color:var(--muted);margin:8px 0 0}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:10px 0 28px}
+.tile{border:1px solid var(--line);border-radius:10px;padding:16px 18px;background:#14110a}
+.tile p{margin:0;font-size:12px;color:var(--muted)}.tile strong{display:block;font-size:26px;font-weight:500;letter-spacing:-.04em;margin-top:6px;overflow-wrap:anywhere}
+.tile small{display:block;font-size:11px;color:var(--muted);margin-top:4px}
+.range-row{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 14px;flex-wrap:wrap}
+.range-row .seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:7px 14px;font-size:13px;color:var(--muted)}.seg button[aria-pressed=true]{background:#ffd98a1a;color:var(--ink)}
+.charts{display:grid;grid-template-columns:1.6fr 1fr;gap:20px;margin-bottom:10px}
+.chart-card{border:1px solid var(--line);border-radius:10px;padding:18px 20px 14px;background:#14110a;min-width:0;position:relative}
+.chart-card h2{font-size:15px;font-weight:550;letter-spacing:-.02em;margin:0 0 2px}.chart-card .sub{font-size:12px;color:var(--muted);margin:0 0 14px}
+.plot{width:100%;height:260px;display:block;overflow:visible;touch-action:pan-y}.plot text{font:11px var(--mono);fill:var(--muted)}
+.plot .hit{fill:transparent}.plot .grid{stroke:#362e1c;stroke-dasharray:2 7}.plot .axis{stroke:#3f3522}
+.tip{position:absolute;pointer-events:none;background:#1a160e;border:1px solid #47402a;border-radius:6px;padding:8px 10px;font-size:12px;line-height:1.4;box-shadow:0 10px 40px #0008;white-space:nowrap;transform:translate(-50%,calc(-100% - 12px))}
+.tip strong{display:block;font-size:14px;letter-spacing:-.02em}.tip.hidden{display:none}
+.donut-wrap{display:grid;grid-template-columns:150px 1fr;gap:18px;align-items:center}
+.donut{width:150px;height:150px}.donut-center{font-size:20px;font-weight:500;letter-spacing:-.04em;fill:var(--ink);font-family:var(--sans)}
+.legend{list-style:none;margin:0;padding:0;display:grid;gap:7px;font-size:12px}.legend li{display:grid;grid-template-columns:10px 1fr auto;gap:10px;align-items:center;color:var(--muted)}
+.legend i{width:10px;height:10px;border-radius:2px;display:block}.legend b{color:var(--ink);font-weight:500}.legend li.dim{opacity:.4}
+.chart-empty{min-height:200px;display:grid;place-content:center;text-align:center;color:var(--muted);font-size:14px}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:24px 0 14px;border-top:1px solid var(--line);margin-top:22px}
+.section-head h2{font-size:17px;font-weight:500;letter-spacing:-.025em;margin:0}.section-head .left{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}.section-head span{font-size:12px;color:var(--muted)}
+.rows{display:grid;gap:0}.row{display:grid;grid-template-columns:auto 1fr auto auto;gap:14px;align-items:center;padding:12px 0;border-top:1px solid #2c2619;min-width:0}
+.row .dot{width:8px;height:8px;border-radius:50%}.row .who{min-width:0}.row .who b{font-weight:550;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .who small{color:var(--muted);font-size:12px}.row .amt{font-size:17px;letter-spacing:-.03em;font-weight:500}
+.row .ops{display:flex;gap:10px}.row .ops button{font-size:12px;padding:4px 0}.row .ops button:hover{color:var(--error)}
+.row-empty{font-size:14px;color:var(--muted);margin:0;padding:7px 0 22px}
+.subs-total{font-size:12px;color:var(--muted)}.subs-total b{color:var(--ink);font-weight:500}
+.due{color:var(--mint)}.overdue{color:var(--error)}
+.footer{display:flex;justify-content:space-between;gap:18px;color:var(--muted);font-size:11px;padding:22px 0 30px;margin-top:12px}.footer a{color:var(--muted);text-decoration:none}
+dialog{color:var(--ink);background:#1a160e;border:1px solid #47402a;border-radius:12px;width:min(470px,calc(100% - 28px));padding:28px;max-height:calc(100dvh - 36px);overflow:auto;box-shadow:0 30px 140px #0009}
+dialog::backdrop{background:#060502b8;backdrop-filter:blur(6px)}
+.modal-head{display:flex;justify-content:space-between;align-items:center;gap:18px}.modal-head h2{font-size:27px;letter-spacing:-.04em;font-weight:550;margin:0}
+.close{border:0;background:transparent;color:var(--muted);font-size:26px;padding:0 6px}.modal-copy{color:var(--muted);font-size:14px;margin:8px 0 24px}
+.field{display:block;min-width:0}.field>span{display:block;margin:0 0 8px;color:#e2dbc6;font-size:13px;font-weight:550}
+fieldset{border:0;padding:0;margin:0;display:grid;gap:16px;min-width:0}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.big{font-size:34px;height:66px;letter-spacing:-.04em}
+.primary{border:1px solid var(--mint);border-radius:6px;background:var(--mint);color:#2a1d05;font-weight:650;padding:13px 18px;width:100%;margin-top:2px}.primary:hover{background:#ffe4a8}
+.message{font-size:13px;margin:10px 0 0;color:var(--muted);overflow-wrap:anywhere}.message:empty{display:none}.message.error{color:var(--error)}.message.success{color:var(--mint)}
+noscript{display:block;padding:20px;color:var(--error)}
+@media(max-width:1000px){.workspace{padding-left:195px}.sidebar{width:195px;padding-left:20px;padding-right:20px}.wrap{padding-left:28px;padding-right:28px}.workspace:before{left:195px}.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.charts{grid-template-columns:1fr}}
+@media(max-width:760px){.workspace{padding-left:0}.workspace:before{left:0}.sidebar{position:static;width:100%;padding:calc(18px + env(safe-area-inset-top)) max(24px,env(safe-area-inset-right)) 18px max(24px,env(safe-area-inset-left));display:flex;align-items:center;gap:28px;border-right:0;border-bottom:1px solid #37311f}.brand{font-size:29px}.nav-label,.sidebar nav{display:none}.wrap{padding:0 24px 25px}header{padding:16px 0}.hero{padding-top:12px}.hero-top{gap:18px}.latest strong{font-size:54px}}
+@media(max-width:520px){.wrap{padding:0 20px 25px}.header-right{gap:12px}.status{display:none}.hero-top{flex-direction:column;align-items:flex-start;gap:6px;margin-bottom:20px}.latest-block{text-align:left}.latest{justify-content:flex-start}h1{font-size:62px}.latest strong{font-size:44px}.section-head{flex-wrap:wrap}.section-head .text-button{white-space:nowrap}.latest-time{font-size:11px}.tiles{gap:8px}.tile{padding:12px 14px}.tile strong{font-size:22px}.quote{padding:14px 16px;gap:12px}.quote-mark{font-size:28px}.donut-wrap{grid-template-columns:120px 1fr;gap:12px}.donut{width:120px;height:120px}.plot{height:220px}.row{grid-template-columns:auto 1fr auto;gap:10px}.row .ops{grid-column:2/-1;justify-content:flex-end}.two{grid-template-columns:1fr}dialog{padding:23px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.editor{border:1px solid var(--line);border-radius:12px;padding:22px 24px;background:#14110a;margin:0 0 28px}
+.editor-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px}.editor-head h2{font-size:17px;font-weight:550;letter-spacing:-.025em;margin:0}.editor-head span{font-size:12px;color:var(--muted)}
+.stars{display:flex;gap:4px;flex-wrap:wrap;margin:0 0 6px}.star{border:0;background:transparent;padding:4px 2px;cursor:pointer;color:#3f3826;font-size:30px;line-height:1;transition:color .1s,transform .1s}.star.on{color:var(--mint)}.star:hover{transform:scale(1.15)}.stars:hover .star{color:#3f3826}.stars:hover .star.hover-on{color:var(--mint)}
+.rating-word{font-size:13px;color:var(--muted);min-height:20px;margin:0 0 14px}.rating-word b{color:var(--ink);font-weight:550}
+textarea{width:100%;min-height:180px;resize:vertical;border-radius:8px;background:#161309;color:var(--ink);border:1px solid var(--line);padding:14px;font:15px/1.6 var(--sans);min-width:0}textarea::placeholder{color:#9f977f}textarea:focus{border-color:var(--mint);outline:none}
+.editor-foot{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:12px}.editor-foot .primary{width:auto;padding:11px 22px;margin:0}.editor-foot small{font-size:12px;color:var(--muted)}
+.day-nav{display:flex;align-items:center;gap:10px}.day-nav button{border:1px solid var(--line);background:transparent;border-radius:6px;width:34px;height:34px;font-size:16px;color:var(--muted)}.day-nav button:hover{color:var(--mint);border-color:var(--mint)}.day-nav button:disabled{opacity:.35}.day-nav strong{font-weight:550;font-size:14px;min-width:120px;text-align:center}
+.entry{padding:16px 0;border-top:1px solid #2c2619}.entry-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}.entry-head b{font-weight:550}.entry-head .stars-small{font-size:13px;letter-spacing:1px;color:var(--mint)}.entry-head .stars-small i{font-style:normal;color:#3f3826}.entry-head .ops{display:flex;gap:12px}.entry-head .ops button{font-size:12px;padding:0}
+.entry p{margin:8px 0 0;white-space:pre-wrap;color:#e2dbc6;font-size:14px;line-height:1.65;overflow-wrap:anywhere}.entry p.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.entry .more{font-size:12px;padding:4px 0 0}
+.search{max-width:320px;font-size:13px;padding:8px 12px;background:transparent}
+.dist{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;align-items:end;padding-top:10px}.dist div{display:flex;flex-direction:column;justify-content:flex-end;gap:6px;height:150px}.dist i{display:block;background:var(--mint);border-radius:4px 4px 0 0;min-height:2px;opacity:.9}.dist i.zero{background:#2c2619}.dist span{font:11px var(--mono);color:var(--muted);text-align:center}.dist b{font:11px var(--mono);color:var(--muted);text-align:center;font-weight:400}
+@media(max-width:520px){.editor{padding:16px}.stars{gap:1px}.star{font-size:23px;padding:3px 1px}textarea{min-height:150px}.search{max-width:100%}}
+</style>
+</head>
+<body>
+<noscript>This page needs JavaScript to connect to your database.</noscript>
+<div class="workspace">
+<aside class="sidebar" aria-label="Your journal"><div class="brand" aria-label="WRITE">WRITE<span>.</span></div><p class="nav-label">YOUR JOURNAL</p><nav aria-label="Summary">
+<a class="area-link" href="#write" aria-current="page"><span class="area-name"><svg viewBox="0 0 20 26" fill="none" aria-hidden="true"><path d="M13 4l3 3-9 9H4v-3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M4 21h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>This week</span><strong id="side-avg">—</strong></a>
+<a class="area-link" href="#entries"><span class="area-name"><svg viewBox="0 0 20 26" fill="none" aria-hidden="true"><path d="M10 3l2.2 4.6 5 .7-3.6 3.5.9 5L10 14.4l-4.5 2.4.9-5L2.8 8.3l5-.7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Streak</span><strong id="side-streak">—</strong></a>
+</nav></aside>
+<div class="wrap">
+<header><span class="overview-label">Your overview</span><div class="header-right"><span class="status" id="connection-status">Your record</span><button class="quiet-button" id="connect-open" type="button">Sign in ↗</button><button class="quiet-button" id="today-open" type="button" hidden>Write today ↗</button><button class="text-button" id="sign-out" type="button" hidden>Sign out</button></div></header>
+<main>
+<aside class="quote" id="quote" aria-label="Quote of the day"><span class="quote-mark" aria-hidden="true">“</span><div class="quote-body"><p class="quote-label">Quote of the day</p><p class="quote-text" id="quote-text"></p><p class="quote-author" id="quote-author"></p></div></aside>
+<section class="hero" id="write" aria-label="Journal overview">
+<div class="hero-top"><div><h1>WRITE.</h1></div><div class="latest-block"><p class="point-metric">Average this week</p><div class="latest"><strong id="week-avg">—</strong><span>/ 10</span></div><p class="latest-time" id="week-note">Your first entry starts here.</p></div></div>
+<div class="tiles">
+<div class="tile"><p>Streak</p><strong id="tile-streak">—</strong><small>days in a row</small></div>
+<div class="tile"><p>Entries</p><strong id="tile-count">—</strong><small id="tile-count-note">all time</small></div>
+<div class="tile"><p>Best day</p><strong id="tile-best">—</strong><small id="tile-best-note"></small></div>
+<div class="tile"><p>Words written</p><strong id="tile-words">—</strong><small>all time</small></div>
+</div>
+<div class="editor" id="editor" hidden>
+<div class="editor-head"><h2 id="editor-title">How was today?</h2><div class="day-nav"><button type="button" id="day-prev" aria-label="Previous day">‹</button><strong id="day-label">Today</strong><button type="button" id="day-next" aria-label="Next day">›</button></div></div>
+<div class="stars" id="stars" role="radiogroup" aria-label="Rate the day from 1 to 10"></div>
+<p class="rating-word" id="rating-word">Tap a star to rate the day.</p>
+<textarea id="body" placeholder="What happened. What's on your mind. What's bugging you. Nobody reads this but you." maxlength="20000"></textarea>
+<div class="editor-foot"><small id="editor-note"></small><button class="primary" id="save" type="button">Save entry ↗</button></div>
+<p class="message" id="save-message" role="status" aria-live="polite"></p>
+</div>
+<div class="range-row"><span class="overview-label">Showing</span><div class="seg" role="group" aria-label="Date range"><button type="button" data-range="30" aria-pressed="true">30 days</button><button type="button" data-range="90" aria-pressed="false">90 days</button><button type="button" data-range="365" aria-pressed="false">1 year</button></div></div>
+<div class="charts">
+<div class="chart-card" id="line-card"><h2>How your days went</h2><p class="sub" id="line-sub">Rating per day</p><svg id="line-plot" class="plot" viewBox="0 0 700 260" role="img" aria-label="Rating per day"></svg><div class="chart-empty" id="line-empty" hidden>Rate a day to draw your line.</div><div class="tip hidden" id="line-tip"></div></div>
+<div class="chart-card" id="dist-card"><h2>Spread</h2><p class="sub" id="dist-sub">How often each rating comes up</p><div class="dist" id="dist"></div><div class="chart-empty" id="dist-empty" hidden>No ratings in this range.</div></div>
+</div>
+</section>
+<section id="entries" aria-label="Past entries"><div class="section-head"><div class="left"><h2>Entries</h2><span id="entries-count"></span></div><input class="search" id="search" type="search" placeholder="Search your entries" autocomplete="off"></div><div id="entries-list"><p class="row-empty">Sign in to read your entries.</p></div><p class="message" id="history-message" role="status" aria-live="polite"></p></section>
+<footer class="footer"><span>WRITE · your journal, in your database</span><a href="https://github.com/justinlmcd/write">Source ↗</a></footer>
+</main>
+</div>
+</div>
+<dialog id="connection-dialog" aria-labelledby="connect-title"><div class="modal-head"><h2 id="connect-title">Sign in.</h2><button class="close" id="connect-close" type="button" aria-label="Close sign-in">×</button></div><p class="modal-copy">Your journal, in your database.</p>
+<form id="connect-form"><label class="field"><span>Email</span><input id="email" type="email" autocomplete="username" required></label><label class="field" style="margin-top:16px"><span>Password</span><input id="password" type="password" autocomplete="current-password" required></label><button class="primary" id="connect-submit" type="submit" style="margin-top:16px">Sign in ↗</button><p class="message" id="connect-message" role="status"></p></form></dialog>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"></script>
+<script src="/quote-of-day.js"></script>
+<script src="/write.js"></script>
+</body>
+</html>
