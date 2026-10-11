@@ -22,6 +22,10 @@ A daily journal. Rate the day from one to ten stars, write down what happened an
 
 Vercel redeploys on every push to `main`.
 
+## Your coach
+
+A card near the top reads your own recent data and tells you how you are doing: a score out of ten, what is going well, what to change, and one next step. Nothing is sent until you press **Ask the coach**, and the last answer is kept on your device. It runs on Claude through a small Vercel function, so you need one extra environment variable in Vercel: `ANTHROPIC_API_KEY`, created at console.anthropic.com under API keys. Each ask costs about a cent. Without the key, the card simply says the coach is off.
+
 ## Run locally
 
 ```

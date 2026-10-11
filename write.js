@@ -46,6 +46,7 @@ function setUser(next){
   $('connection-status').textContent=user?'Connected':'Your record'; $('connection-status').classList.toggle('connected',!!user);
   if(!user){ entries=[]; day=today(); render(); $('entries-list').innerHTML='<p class="row-empty">Sign in to read your entries.</p>'; }
   else load();
+  window.coachUser?.(user?.id);
 }
 $('connect-open').onclick=()=>{ $('connection-dialog').showModal(); $('email').focus(); };
 $('connect-close').onclick=()=>{ if(!busy)$('connection-dialog').close(); };
@@ -174,6 +175,17 @@ document.addEventListener('click',async e=>{
 });
 document.querySelectorAll('[data-range]').forEach(b=>b.onclick=()=>{ range=b.dataset.range; document.querySelectorAll('[data-range]').forEach(x=>x.setAttribute('aria-pressed',String(x===b))); drawLine(); drawDist(); });
 
+
+// What the coach reads: the last 30 days of ratings and the text of your most recent entries.
+function coachSummary(){
+  const t=today(); const L=[]; const recent=entries.filter(e=>e.written_on>=addDays(t,-29));
+  L.push(`Entries: ${entries.length} total, ${recent.length} in the last 30 days. Current streak ${streak()} days. Average rating last 30 days: ${recent.length?r1(recent.reduce((a,e)=>a+e.rating,0)/recent.length):'none'}.`);
+  L.push('Ratings by day, last 30 days: '+recent.slice().sort((a,b)=>a.written_on<b.written_on?-1:1).map(e=>`${e.written_on} ${e.rating}`).join(', ')+'.');
+  L.push('\nMost recent entries, newest first:');
+  for(const e of entries.slice(0,10)) L.push(`${e.written_on} (${e.rating}/10, ${WORDS[e.rating]}): ${e.body.trim()?e.body.trim().slice(0,700).replace(/\s+/g,' ')+(e.body.length>700?'…':''):'(no writing)'}`);
+  return L.join('\n');
+}
+window.coach={app:'write',note:'The coach also reads the text of your last ten entries.',userId:async()=>user?.id||null,session:async()=>{ try{ const db=await connect(); const {data:{session}}=await db.auth.getSession(); return session?.access_token||null; }catch{ return null; } },summary:coachSummary};
 // Reconnect a saved session, if any.
 render();
 connect().catch(()=>{});

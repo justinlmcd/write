@@ -3,5 +3,10 @@
   "private": true,
   "version": "0.1.0",
   "description": "WRITE. A daily journal: rate the day out of ten and write down what was on your mind.",
-  "scripts": { "dev": "node dev.js" }
+  "scripts": {
+    "dev": "node dev.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.80.0"
+  }
 }

@@ -102,6 +102,17 @@ textarea{width:100%;min-height:180px;resize:vertical;border-radius:8px;backgroun
 .search{max-width:320px;font-size:13px;padding:8px 12px;background:transparent}
 .dist{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;align-items:end;padding-top:10px}.dist div{display:flex;flex-direction:column;justify-content:flex-end;gap:6px;height:150px}.dist i{display:block;background:var(--mint);border-radius:4px 4px 0 0;min-height:2px;opacity:.9}.dist i.zero{background:#2c2619}.dist span{font:11px var(--mono);color:var(--muted);text-align:center}.dist b{font:11px var(--mono);color:var(--muted);text-align:center;font-weight:400}
 @media(max-width:520px){.editor{padding:16px}.stars{gap:1px}.star{font-size:23px;padding:3px 1px}textarea{min-height:150px}.search{max-width:100%}}
+.coach{border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin:0 0 28px;background:linear-gradient(110deg,#ffd98a10,transparent 60%),#14110a}
+.coach-top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px}.coach-top h2{font-size:15px;font-weight:550;letter-spacing:-.02em;margin:0;display:flex;align-items:center;gap:9px}.coach-top h2 svg{width:16px;height:16px;color:var(--mint)}
+.coach-empty{margin:0;font-size:14px;color:var(--muted);line-height:1.6}.coach-empty b{color:var(--ink);font-weight:550}
+.coach-head{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;margin-bottom:16px}.coach-score{font-size:38px;font-weight:500;letter-spacing:-.05em;line-height:1;color:var(--mint)}.coach-score small{font-size:13px;color:var(--muted);letter-spacing:0;margin-left:2px}
+.coach-headline{margin:0;font-size:clamp(15px,1.5vw,18px);line-height:1.45;letter-spacing:-.01em}
+.coach-cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}.coach-cols h3{font:11px var(--mono);letter-spacing:.17em;text-transform:uppercase;color:var(--mint);margin:0 0 8px}.coach-cols ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}.coach-cols li{font-size:13.5px;line-height:1.5;color:#e2dbc6;padding-left:14px;position:relative}.coach-cols li:before{content:"";position:absolute;left:0;top:9px;width:5px;height:5px;border-radius:50%;background:var(--mint)}.coach-cols li b{display:block;font-weight:550;color:var(--ink)}.coach-cols li span{color:var(--muted)}
+.coach-next{margin:16px 0 0;padding:12px 14px;border-radius:8px;background:#ffd98a12;font-size:14px;line-height:1.5}.coach-next span{display:block;font:11px var(--mono);letter-spacing:.17em;text-transform:uppercase;color:var(--mint);margin-bottom:4px}
+.coach-meta{margin:12px 0 0;font-size:11px;color:var(--muted)}
+.coach .spinner{display:inline-block;width:14px;height:14px;border:2px solid #ffd98a55;border-top-color:var(--mint);border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:8px}@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:520px){.coach{padding:16px}.coach-cols{grid-template-columns:1fr;gap:14px}.coach-score{font-size:32px}}
+
 </style>
 </head>
 <body>
@@ -123,6 +134,8 @@ textarea{width:100%;min-height:180px;resize:vertical;border-radius:8px;backgroun
 <div class="tile"><p>Best day</p><strong id="tile-best">—</strong><small id="tile-best-note"></small></div>
 <div class="tile"><p>Words written</p><strong id="tile-words">—</strong><small>all time</small></div>
 </div>
+<section class="coach" id="coach" aria-label="Your coach"><div class="coach-top"><h2><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l1.8 4.6L18 9l-4.2 1.4L12 15l-1.8-4.6L6 9l4.2-1.4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M5 16l.9 2.1L8 19l-2.1.9L5 22l-.9-2.1L2 19l2.1-.9zM19 14l.7 1.6 1.6.7-1.6.7L19 18.6l-.7-1.6-1.6-.7 1.6-.7z" fill="currentColor"/></svg>Your coach</h2><button class="quiet-button" id="coach-refresh" type="button" hidden>Ask the coach ↗</button></div><div id="coach-body"></div><p class="message" id="coach-message" role="status" aria-live="polite"></p></section>
+
 <div class="editor" id="editor" hidden>
 <div class="editor-head"><h2 id="editor-title">How was today?</h2><div class="day-nav"><button type="button" id="day-prev" aria-label="Previous day">‹</button><strong id="day-label">Today</strong><button type="button" id="day-next" aria-label="Next day">›</button></div></div>
 <div class="stars" id="stars" role="radiogroup" aria-label="Rate the day from 1 to 10"></div>
@@ -146,6 +159,7 @@ textarea{width:100%;min-height:180px;resize:vertical;border-radius:8px;backgroun
 <form id="connect-form"><label class="field"><span>Email</span><input id="email" type="email" autocomplete="username" required></label><label class="field" style="margin-top:16px"><span>Password</span><input id="password" type="password" autocomplete="current-password" required></label><button class="primary" id="connect-submit" type="submit" style="margin-top:16px">Sign in ↗</button><p class="message" id="connect-message" role="status"></p></form></dialog>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"></script>
 <script src="/quote-of-day.js"></script>
+<script src="/coach.js"></script>
 <script src="/write.js"></script>
 </body>
 </html>
