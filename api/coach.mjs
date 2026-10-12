@@ -2,7 +2,7 @@
 // Runs on Vercel so the API key never reaches the browser. Only answers signed-in users.
 import Anthropic from '@anthropic-ai/sdk';
 
-const APP = 'meal';
+const APP = 'write';
 
 const ROLES = {
   wired: `You are a calm, honest coach reading someone's body-weight log. They log weight by hand and take progress photos. Judge consistency of logging first, then the direction of the trend against whatever goal they state. Weight moves day to day from water and food; only call a change real when the weekly averages move. Never comment on appearance or suggest extreme dieting.`,
