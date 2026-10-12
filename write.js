@@ -90,7 +90,7 @@ function render(){
 // ---- the editor: one entry per day ----
 function buildStars(){ $('stars').innerHTML=Array.from({length:10},(_,i)=>`<button type="button" class="star" data-star="${i+1}" role="radio" aria-checked="false" aria-label="${i+1} out of 10">★</button>`).join(''); }
 buildStars();
-function paintStars(n,hover){ $('stars').querySelectorAll('.star').forEach(b=>{ const v=+b.dataset.star; b.classList.toggle('on',v<=n); b.classList.toggle('hover-on',hover!=null&&v<=hover); b.setAttribute('aria-checked',String(v===n)); }); }
+function paintStars(n,hover){ const lit=hover!=null?hover:n; $('stars').querySelectorAll('.star').forEach(b=>{ const v=+b.dataset.star; b.classList.toggle('on',v<=lit); b.setAttribute('aria-checked',String(v===n)); }); }
 function ratingWord(n){ return n?`<b>${n}/10</b> · ${WORDS[n]}`:'Tap a star to rate the day.'; }
 $('stars').addEventListener('click',e=>{ const b=e.target.closest('.star'); if(!b)return; rating=+b.dataset.star; dirty=true; paintStars(rating); $('rating-word').innerHTML=ratingWord(rating); });
 $('stars').addEventListener('pointerover',e=>{ const b=e.target.closest('.star'); if(b) paintStars(rating,+b.dataset.star); });
