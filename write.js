@@ -42,7 +42,7 @@ function makeClient(config){
 function setUser(next){
   if(next?.id===user?.id)return;
   user=next; loadId++; dirty=false;
-  $('connect-open').hidden=!!user; $('sign-out').hidden=!user; $('today-open').hidden=!user; $('editor').hidden=!user;
+  $('connect-open').hidden=!!user; $('sign-out').hidden=!user; $('today-open').hidden=!user; $('editor').hidden=!user; $('csv-entries').hidden=!user;
   $('connection-status').textContent=user?'Connected':'Your record'; $('connection-status').classList.toggle('connected',!!user);
   if(!user){ entries=[]; day=today(); render(); $('entries-list').innerHTML='<p class="row-empty">Sign in to read your entries.</p>'; }
   else load();
@@ -145,7 +145,7 @@ function lineHover(e){
   tip.style.whiteSpace='normal'; tip.style.maxWidth='240px';
   tip.classList.remove('hidden'); tip.style.left=(r.left-card.left+best.px/700*r.width)+'px'; tip.style.top=(r.top-card.top+best.py/260*r.height)+'px';
 }
-$('line-plot').addEventListener('pointermove',lineHover); $('line-plot').addEventListener('pointerleave',()=>{ $('line-tip').classList.add('hidden'); const f=$('line-focus'); if(f)f.innerHTML=''; });
+$('line-plot').addEventListener('pointermove',lineHover); tapToRead($('line-plot'),lineHover,()=>{ $('line-tip').classList.add('hidden'); const f=$('line-focus'); if(f)f.innerHTML=''; });
 $('line-plot').addEventListener('click',e=>{ if(!linePts.length)return; const r=$('line-plot').getBoundingClientRect(); const mx=(e.clientX-r.left)/r.width*700; let best=linePts[0]; for(const p of linePts) if(Math.abs(p.px-mx)<Math.abs(best.px-mx)) best=p; goTo(best.written_on); $('editor').scrollIntoView({behavior:'smooth'}); });
 
 // ---- spread: how often each rating comes up ----
@@ -156,6 +156,26 @@ function drawDist(){
   $('dist').innerHTML=counts.map((c,i)=>`<div><b>${c||''}</b><i class="${c?'':'zero'}" style="height:${c?Math.max(6,Math.round(c/max*110)):3}px" title="${c} day${c===1?'':'s'} rated ${i+1}"></i><span>${i+1}</span></div>`).join('');
 }
 
+
+// Charts answer a tap as well as a hover: a touch pins the tooltip until you tap elsewhere.
+// Marks in the same group share one tooltip, so moving between them swaps it instead of hiding it.
+let lastPinned=null,lastGroup='';
+function tapToRead(el,show,hide,group=''){
+  let pinned=false;
+  el.addEventListener('pointerdown',e=>{ show(e); pinned=e.pointerType!=='mouse'; if(pinned){ lastPinned=el; lastGroup=group; } });
+  el.addEventListener('pointerleave',()=>{ if(!pinned) hide(); });
+  document.addEventListener('pointerdown',e=>{ if(pinned&&!el.contains(e.target)){ pinned=false; if(!(group&&lastGroup===group&&lastPinned!==el&&lastPinned?.contains(e.target))) hide(); } });
+}
+
+// Download, or on a phone share, a CSV of your own rows.
+async function exportCsv(name,header,rows){
+  const q=v=>{ const s=String(v??''); return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+  const csv=[header,...rows].map(r=>r.map(q).join(',')).join('\r\n');
+  const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  try{ const file=new File([blob],name,{type:'text/csv'}); if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:name}); return; } }catch(err){ if(err?.name==='AbortError') return; }
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1000);
+}
+$('csv-entries').onclick=()=>exportCsv('write-journal.csv',['date','rating','entry'],entries.map(e=>[e.written_on,e.rating,e.body]));
 // ---- entries ----
 function renderEntries(){
   const q=query.trim().toLowerCase(); const list=q?entries.filter(e=>e.body.toLowerCase().includes(q)||String(e.rating)===q):entries;
